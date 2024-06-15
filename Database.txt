@@ -1,0 +1,104 @@
+CREATE TABLE Usuarios(
+nUsuarioID	INT IDENTITY PRIMARY KEY,
+sUserName	NVARCHAR(20) NOT NULL,
+sPassword	NVARCHAR(MAX) NOT NULL,
+sCorreo		NVARCHAR(50) NOT NULL,
+sCreadoPor	NVARCHAR(20) NOT NULL,
+dFechaCreado DATETIME DEFAULT GETDATE(),
+sActualizadoPor NVARCHAR(20) NULL,
+dFechaActualizacion DATETIME NULL
+)
+
+CREATE TABLE Proveedor(
+nProveedorID			INT IDENTITY PRIMARY KEY,
+sNombreProveedor		NVARCHAR(50) NOT NULL,
+sNumRuc					NVARCHAR(14) NOT NULL,
+nTelefono				INT NOT NULL,
+sCorreo					NVARCHAR(50) NOT NULL,
+sCreadoPor	NVARCHAR(20) NOT NULL,
+dFechaCreado DATETIME DEFAULT GETDATE(),
+sActualizadoPor NVARCHAR(20) NULL,
+dFechaActualizacion DATETIME NULL
+)
+
+CREATE TABLE Marcas(
+nMarcaID INT IDENTITY PRIMARY KEY,
+sNombreMarca NVARCHAR(50) NOT NULL,
+sCreadoPor	NVARCHAR(20) NOT NULL,
+dFechaCreado DATETIME DEFAULT GETDATE(),
+sActualizadoPor NVARCHAR(20) NULL,
+dFechaActualizacion DATETIME NULL)
+
+CREATE TABLE Productos(
+nProductoID INT IDENTITY PRIMARY KEY,
+sNombreProducto NVARCHAR(50) NOT NULL,
+sDescripcionProducto NVARCHAR(50),
+nPrecio	DECIMAL(18,2) NOT NULL,
+sModelo NVARCHAR(50),
+nMarcaID INT FOREIGN KEY REFERENCES Marcas(nMarcaID),
+sCreadoPor	NVARCHAR(20) NOT NULL,
+dFechaCreado DATETIME DEFAULT GETDATE(),
+sActualizadoPor NVARCHAR(20) NULL,
+dFechaActualizacion DATETIME NULL
+)
+
+CREATE TABLE Bodega(
+nBodegaID INT IDENTITY PRIMARY KEY,
+sNombreBodega NVARCHAR(20) NOT NULL,
+sDireccion NVARCHAR(50) NOT NULL,
+sCreadoPor	NVARCHAR(20) NOT NULL,
+dFechaCreado DATETIME DEFAULT GETDATE(),
+sActualizadoPor NVARCHAR(20) NULL,
+dFechaActualizacion DATETIME NULL
+)
+
+CREATE TABLE Entrada(
+nEntradaID INT IDENTITY PRIMARY KEY,
+nProveedorID INT FOREIGN KEY REFERENCES Proveedor(nProveedorID),
+nTotal	DECIMAL(18,2) NOT NULL,
+sObservaciones NVARCHAR(50),
+nBodegaID INT FOREIGN KEY REFERENCES Bodega(nBodegaID),
+sCreadoPor	NVARCHAR(20) NOT NULL,
+dFechaCreado DATETIME DEFAULT GETDATE(),
+sActualizadoPor NVARCHAR(20) NULL,
+dFechaActualizacion DATETIME NULL
+)
+
+CREATE TABLE EntradaProducto(
+nEntradaProductoID INT IDENTITY PRIMARY KEY,
+nEntradaID INT FOREIGN KEY REFERENCES Entrada(nEntradaID),
+nProductoID INT FOREIGN KEY REFERENCES Productos(nProductoID),
+nCantidad INT NOT NULL,
+nPrecioUnitario DECIMAL(18,2) NOT NULL,
+sCreadoPor	NVARCHAR(20) NOT NULL,
+dFechaCreado DATETIME DEFAULT GETDATE(),
+sActualizadoPor NVARCHAR(20) NULL,
+dFechaActualizacion DATETIME NULL
+)
+
+CREATE TABLE Inventario(
+nInventarioID INT IDENTITY PRIMARY KEY,
+nProductoID INT FOREIGN KEY REFERENCES Productos(nProductoID),
+nStock INT NOT NULL,
+nBodegaID INT FOREIGN KEY REFERENCES Bodega(nBodegaID))
+
+CREATE TABLE Salidas(
+nSalidaID INT IDENTITY PRIMARY KEY,
+sComprador NVARCHAR(50) NOT NULL,
+nBodegaID INT FOREIGN KEY REFERENCES Bodega(nBodegaID),
+nTotal DECIMAL(18,2) NOT NULL,
+sCreadoPor	NVARCHAR(20) NOT NULL,
+dFechaCreado DATETIME DEFAULT GETDATE(),
+sActualizadoPor NVARCHAR(20) NULL,
+dFechaActualizacion DATETIME NULL)
+
+CREATE TABLE SalidaProducto(
+nSalidaProducto INT IDENTITY PRIMARY KEY,
+nSalidaID INT FOREIGN KEY REFERENCES Salidas(nSalidaID),
+nProdcutoID INT FOREIGN KEY REFERENCES Productos(nProductoID),
+nCantidad INT NOT NULL,
+sCreadoPor	NVARCHAR(20) NOT NULL,
+dFechaCreado DATETIME DEFAULT GETDATE(),
+sActualizadoPor NVARCHAR(20) NULL,
+dFechaActualizacion DATETIME NULL
+)
